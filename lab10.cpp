@@ -5,13 +5,6 @@
 //Author: Gordon Griesel
 //Date: 2017
 //This is a perspective ray tracer.
-//
-//This program is nearly identical to lab7.cpp
-//For this assignment, you may start with your own current version of
-//your lab-6 or lab-7 program.
-//Name it lab10.cpp
-//
-//
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,7 +29,7 @@ enum {
 	TYPE_TRIANGLE,
 	TYPE_CYLINDER,
 	TYPE_CONE,
-  TYPE_BOX,
+  	TYPE_BOX,
 	ORTHO,
 	PERSPECTIVE,
 	SURF_NONE,
@@ -297,28 +290,42 @@ void takeScreenshot(const char *filename, int reset)
 	XFree(image);
 }
 
+//init for cube
 void cube() {
 
 	//Setup some objects
 	Object *o;
 	g.nobjects=0;
 
+	//--------------------------------------------------------------------
+	//floor
+	o = &g.object[g.nobjects];
+	o->type = TYPE_DISK;
+	vecMake(0.0, 0.0, 0.0, o->center);
+	vecMake(0.0, 1.0, 0.0, o->norm);
+	o->radius = 2000.0;
+	o->specular = true;
+	vecMake(0.2, 0.2, 0.2, o->spec);
+	vecMake(0.5, 0.5, 0.5, o->color);
+	o->surface = SURF_CHECKER;
+	vecNormalize(o->norm);
+	g.nobjects++;
+
 	//box setup start 
 	o = &g.object[g.nobjects];
 	o->type = TYPE_BOX;
 
-  vecMake(-1,-1,1, o->vert[0]);
-  vecMake(1,-1,1, o->vert[1]);
-  vecMake(1,1,1, o->vert[2]);
-  vecMake(-1,1,1, o->vert[3]);
-  vecMake(-1,-1,-1, o->vert[4]);
-  vecMake(1,-1,-1, o->vert[5]);
-  vecMake(1,1,-1, o->vert[6]);
-  vecMake(-1,1,-1, o->vert[7]);
+  	vecMake(-1,-1,1, o->vert[0]);
+  	vecMake(1,-1,1, o->vert[1]);
+  	vecMake(1,1,1, o->vert[2]);
+  	vecMake(-1,1,1, o->vert[3]);
+  	vecMake(-1,-1,-1, o->vert[4]);
+  	vecMake(1,-1,-1, o->vert[5]);
+  	vecMake(1,1,-1, o->vert[6]);
+  	vecMake(-1,1,-1, o->vert[7]);
 
   //set up faces 
 
-  //vecMake(0,1,2, o->face[7]);
   int face[][3] = { 0,1,2,
                     0,2,3,
                     4,7,6,
@@ -342,19 +349,12 @@ void cube() {
   } 
 
 	vecMake(0.0, 100.0, -200.0, o->center);
-  vecMake(0.0, 1.0, 0.0, o->norm);
+  	vecMake(0.0, 1.0, 0.0, o->norm);
 	o->specular = true;
 	vecMake(0.5, 0.5, 0.5, o->spec);
 	vecMake(1,0,0, o->color);
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
-
- // o->inside = true;
- // o->clip[o->nclips].center;
- // vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
- // o->clip[o->nclips].radius = 100.0;
- // ++o->nclips;
-
 	g.nobjects++;
 
 
@@ -368,17 +368,70 @@ void cube() {
  
 }
 
+//init for layers
 void layers() {
 
+	//Setup some objects
+	Object *o;
+	g.nobjects=0;
+
+  	o->clip->clear();
+
+	//--------------------------------------------------------------------
+	//floor
+	o = &g.object[g.nobjects];
+	o->type = TYPE_DISK;
+	vecMake(0.0, 0.0, 0.0, o->center);
+	vecMake(0.0, 1.0, 0.0, o->norm);
+	o->radius = 2000.0;
+	o->specular = true;
+	vecMake(0.2, 0.2, 0.2, o->spec);
+	vecMake(0.5, 0.5, 0.5, o->color);
+	o->surface = SURF_CHECKER;
+	vecNormalize(o->norm);
+	g.nobjects++;
+	//--------------------------------------------------------------------
+	float yoffset = 25.0;
+	float clipoffset = 50.0;
+	//creat layers starting from bottom
+	for (int i = 0; i < 6; i++) {
+		o = &g.object[g.nobjects];
+		o->type = TYPE_DISK;
+		vecMake(0.0, yoffset, 0.0, o->center);
+		vecMake(0.0, 1.0, 0.0, o->norm);
+		o->radius = 200.0;
+		vecMake(0.5, 0.5, 0.5, o->color);
+		vecNormalize(o->norm);
+
+
+  		o->clip[o->nclips].center;
+  		vecMake(0.0,clipoffset, 0.0, o->clip[o->nclips].center);
+  		o->clip[o->nclips].radius = 50.0;
+  		++o->nclips;
+
+		g.nobjects++;
+
+		yoffset += 10.0;
+		clipoffset += 15.0;
+	}
+	//--------------------------------------------------------------------
+	
+	//setup light and camera
+	vecMake(90.0, 150.0, 500.0, g.lightPos);
+	vecMake(4.0, 200.0, 1100.0, g.from);
+	vecMake(0.0, 80.0, 0.0, g.at);
+	vecMake(0.0, 1.0, 0.0, g.up);
+	g.angle = 30.0;
 
 }
 
+//init for pokeball
 void pokeball() {
 	//Setup some objects
 	Object *o;
 	g.nobjects=0;
 
-  o->clip->clear();
+  	o->clip->clear();
 
 	//--------------------------------------------------------------------
 	//floor
@@ -404,11 +457,11 @@ void pokeball() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = true;
-  o->clip[o->nclips].center;
-  vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 00.0;
-  ++o->nclips;
+  	o->inside = true;
+  	o->clip[o->nclips].center;
+  	vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 00.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
@@ -423,11 +476,11 @@ void pokeball() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = false;
-  o->clip[o->nclips].center;
-  vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 00.0;
-  ++o->nclips;
+  	o->inside = false;
+  	o->clip[o->nclips].center;
+  	vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 00.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
@@ -443,11 +496,11 @@ void pokeball() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = false;
-  o->clip[o->nclips].center;
-  vecMake(0.0, 100.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+  	o->inside = false;
+  	o->clip[o->nclips].center;
+  	vecMake(0.0, 100.0,-200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 100.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
@@ -492,11 +545,11 @@ void spheres() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = true;
-  o->clip[o->nclips].center;
-  vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+  	o->inside = true;
+  	o->clip[o->nclips].center;
+  	vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 100.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
@@ -511,11 +564,11 @@ void spheres() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = false;
-  o->clip[o->nclips].center;
-  vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+  	o->inside = false;
+  	o->clip[o->nclips].center;
+  	vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 100.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
@@ -543,7 +596,6 @@ void init(void)
   if (g.mode == 4) {
       spheres();
   }
-
 
 }
 
@@ -636,7 +688,7 @@ void showMenu()
 	x11.setColor3i(255, 255, 0);
 	x11.drawText(10, y, "R - Render");
 	y += inc;
-  x11.setColor3i(255, 255, 0);
+  	x11.setColor3i(255, 255, 0);
 	x11.drawText(10, y, "1 - Cube");
 	y += inc;
 	x11.setColor3i(255, 255, 0);
@@ -662,9 +714,9 @@ int checkKeys(XEvent *e)
 			takeScreenshot("", 0);
 			return 0;
 		}
-    if (key == XK_m) {
-        showMenu();
-    }
+    		if (key == XK_m) {
+        		showMenu();
+    		}
 		if (key == XK_r) {
 			init();
 			render(PERSPECTIVE);
@@ -676,34 +728,34 @@ int checkKeys(XEvent *e)
 			return 0;
 		}
 		if (key == XK_1) {
-      g.mode = 1;
+      			g.mode = 1;
 			init();
 			render(PERSPECTIVE);
 			return 0;
 		}
 		if (key == XK_2) {
-      g.mode = 2;
+      			g.mode = 2;
 			init();
 			render(PERSPECTIVE);
 			return 0;
 		}
 		if (key == XK_3) {
-      g.mode = 3;
+      			g.mode = 3;
 			init();
 			render(PERSPECTIVE);
 			return 0;
 		}
 		if (key == XK_4) {
-      g.mode = 4;
+      			g.mode = 4;
 			init();
 			render(PERSPECTIVE);
 			return 0;
 		}
 		if (key == XK_Escape) {
 			if (g.mode) {
-				g.mode = 0;
-				x11.clearScreen();
-				return 0;
+			g.mode = 0;
+			x11.clearScreen();
+			return 0;
 			}
 			return 1;
 		}
@@ -781,6 +833,7 @@ bool pointInTriangle(Vec tri[3], Vec p, Flt *u, Flt *v)
 	return (*u >= 0.0 && *v >= 0.0 && *u + *v <= 1.0);
 }
 
+
 int rayPlaneIntersect(Vec center, Vec normal, Ray *ray, Hit *hit)
 {
 	//http://mathworld.wolfram.com/Plane.html
@@ -837,12 +890,26 @@ int rayPlaneIntersect(Vec center, Vec normal, Ray *ray, Hit *hit)
 	hit->p[1] = ray->o[1] + hit->t * ray->d[1];
 	hit->p[2] = ray->o[2] + hit->t * ray->d[2];
 
+
+
 	return 1;
 }
 
 int rayDiskIntersect(Object *o, Ray *ray, Hit *hit)
 {
 	//Does the ray intersect the disk's plane?
+	
+
+
+    if(o->nclips) {
+        for(int i=0; i<o->nclips; i++) { 
+	Vec v;
+	vecSub(hit->p, o->clip[i].center, v);
+	if (vecDotProduct(v, o->clip[i].normal) > 0.0)
+		return 0;
+        }
+    }
+	
 	if (rayPlaneIntersect(o->center, o->norm, ray, hit)) {
 		//Yes.
 		//Check that the hit point is within the disk radius
