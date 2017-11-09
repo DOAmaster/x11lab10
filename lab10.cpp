@@ -29,7 +29,6 @@ enum {
 	TYPE_TRIANGLE,
 	TYPE_CYLINDER,
 	TYPE_CONE,
-  	TYPE_BOX,
 	ORTHO,
 	PERSPECTIVE,
 	SURF_NONE,
@@ -313,7 +312,7 @@ void cube() {
 
 	//box setup start 
 	o = &g.object[g.nobjects];
-	o->type = TYPE_BOX;
+	o->type = TYPE_TRIANGLE;
 
   	vecMake(-1,-1,1, o->vert[0]);
   	vecMake(1,-1,1, o->vert[1]);
@@ -457,11 +456,12 @@ void pokeball() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  	o->inside = true;
-  	o->clip[o->nclips].center;
-  	vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
-  	o->clip[o->nclips].radius = 00.0;
-  	++o->nclips;
+
+  o->inside = true;
+  o->clip[o->nclips].center;
+  vecMake(0.0, 150.0, -200.0, o->clip[o->nclips].center);
+  o->clip[o->nclips].radius = 100.0;
+  ++o->nclips;
 
 	g.nobjects++;
 
@@ -476,11 +476,11 @@ void pokeball() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  	o->inside = false;
-  	o->clip[o->nclips].center;
-  	vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
-  	o->clip[o->nclips].radius = 00.0;
-  	++o->nclips;
+  o->inside = false;
+  o->clip[o->nclips].center;
+  vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
+  o->clip[o->nclips].radius = 00.0;
+  ++o->nclips;
 
 	g.nobjects++;
 
@@ -545,18 +545,18 @@ void spheres() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  	o->inside = true;
-  	o->clip[o->nclips].center;
-  	vecMake(75.0,200.0,-200.0, o->clip[o->nclips].center);
-  	o->clip[o->nclips].radius = 100.0;
-  	++o->nclips;
+  o->inside = true;
+  o->clip[o->nclips].center;
+  vecMake(0.0, 150.0, -200.0, o->clip[o->nclips].center);
+  o->clip[o->nclips].radius = 100.0;
+  ++o->nclips;
 
 	g.nobjects++;
 
 	//--------------------------------------------------------------------
 	//sphere 2 clipping 
 	o = &g.object[g.nobjects];
-	o->type = TYPE_SPHERE;
+	o->type = TYPE_DISK;
 	vecMake(0.0, 100.0, -200.0, o->center);
 	o->specular = true;
 	vecMake(0.5, 0.5, 0.5, o->spec);
@@ -564,11 +564,11 @@ void spheres() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  	o->inside = false;
-  	o->clip[o->nclips].center;
-  	vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
-  	o->clip[o->nclips].radius = 100.0;
-  	++o->nclips;
+  o->inside = false;
+  o->clip[o->nclips].center;
+  vecMake(00.0, 200.0,-200.0, o->clip[o->nclips].center);
+  o->clip[o->nclips].radius = 100.0;
+  ++o->nclips;
 
 	g.nobjects++;
 
