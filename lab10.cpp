@@ -79,8 +79,8 @@ struct Object {
 	Flt base, apex;
 	Clip clip[MAX_CLIPS];
 	int nclips;
-  Vec vert[24];
-  int face[][3];
+  	Vec vert[24];
+  	int face[][3];
 	Object() {
 		specular = false;
 		inside = false;
