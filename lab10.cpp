@@ -390,7 +390,7 @@ void layers() {
 	vecNormalize(o->norm);
 	g.nobjects++;
 	//--------------------------------------------------------------------
-	float yoffset = 25.0;
+	float yoffset = 50.0;
 	float clipoffset = 50.0;
 	//creat layers starting from bottom
 	for (int i = 0; i < 6; i++) {
@@ -404,13 +404,13 @@ void layers() {
 
 
   		o->clip[o->nclips].center;
-  		vecMake(0.0,clipoffset, 0.0, o->clip[o->nclips].center);
-  		o->clip[o->nclips].radius = 50.0;
+  		vecMake(clipoffset, 0.0, 0.0, o->clip[o->nclips].center);
+  		o->clip[o->nclips].radius = 100.0;
   		++o->nclips;
 
 		g.nobjects++;
 
-		yoffset += 10.0;
+		yoffset += 25.0;
 		clipoffset += 15.0;
 	}
 	//--------------------------------------------------------------------
@@ -431,6 +431,7 @@ void pokeball() {
 	g.nobjects=0;
 
   	o->clip->clear();
+	o->clear_clips();
 
 	//--------------------------------------------------------------------
 	//floor
@@ -457,45 +458,27 @@ void pokeball() {
 	o->surface = SURF_NONE;
 
 
-  o->inside = true;
-  o->clip[o->nclips].center;
-  vecMake(0.0, 150.0, -200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+	//clip sphere about half
+  	o->inside = true;
+  	//o->clip[o->nclips].center;
+  	vecMake(0.0, 200.0, -200.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 100.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
-	//--------------------------------------------------------------------
-	//sphere 2 clipping bottom white with red
+	//-------------------------------------------------------------------  
+	//sphere 2 top red
 	o = &g.object[g.nobjects];
 	o->type = TYPE_SPHERE;
-	vecMake(0.0, 100.0, -200.0, o->center);
+	vecMake(0.0, 150.0, -200.0, o->center);
 	o->specular = true;
 	vecMake(0.5, 0.5, 0.5, o->spec);
 	vecMake(1,0,0, o->color);
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = false;
-  o->clip[o->nclips].center;
-  vecMake(75.0, 100.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 00.0;
-  ++o->nclips;
-
-	g.nobjects++;
-
-	//--------------------------------------------------------------------
-  
-	//sphere 3 clipping on top red
-	o = &g.object[g.nobjects];
-	o->type = TYPE_SPHERE;
-	vecMake(0.0, 200.0, -200.0, o->center);
-	o->specular = true;
-	vecMake(0.5, 0.5, 0.5, o->spec);
-	vecMake(1,0,0, o->color);
-	o->radius = 100.0;
-	o->surface = SURF_NONE;
-
+	//cut into top sphere
   	o->inside = false;
   	o->clip[o->nclips].center;
   	vecMake(0.0, 100.0,-200.0, o->clip[o->nclips].center);
@@ -505,11 +488,26 @@ void pokeball() {
 	g.nobjects++;
 
 	//--------------------------------------------------------------------
+	//cylinder black
+	o = &g.object[g.nobjects];
+	o->type = TYPE_CYLINDER;
+	o->inside = true;
+	vecMake(0.0, 100.0, 0.0, o->center);
+	//vecMake(0.0, 0.0, -1.0, o->norm);	
+	vecMake(0.0, 0.0, 0.0, o->color);
+
+	o->apex = 30.0;
+	o->radius = 100.0;
+	o->surface = SURF_NONE;
+	g.nobjects++;
+
   
+	//--------------------------------------------------------------------
+
 	//setup light and camera
 	vecMake(90.0, 150.0, 500.0, g.lightPos);
 	vecMake(4.0, 200.0, 1100.0, g.from);
-	vecMake(0.0, 80.0, 0.0, g.at);
+	vecMake(0.0, 180.0, 0.0, g.at);
 	vecMake(0.0, 1.0, 0.0, g.up);
 	g.angle = 30.0;
 
@@ -520,6 +518,10 @@ void spheres() {
 	//Setup some objects
 	Object *o;
 	g.nobjects=0;
+
+
+  	o->clip->clear();
+	o->clear_clips();
 
 	//--------------------------------------------------------------------
 	//floor
@@ -545,30 +547,30 @@ void spheres() {
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = true;
-  o->clip[o->nclips].center;
-  vecMake(0.0, 150.0, -200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+  	o->inside = false;
+  	o->clip[o->nclips].center;
+  	vecMake(0.0, 200.0, -100.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 150.0;
+ 	++o->nclips;
 
 	g.nobjects++;
 
 	//--------------------------------------------------------------------
 	//sphere 2 clipping 
 	o = &g.object[g.nobjects];
-	o->type = TYPE_DISK;
+	o->type = TYPE_SPHERE;
 	vecMake(0.0, 100.0, -200.0, o->center);
 	o->specular = true;
 	vecMake(0.5, 0.5, 0.5, o->spec);
-	vecMake(.9,.7,.2, o->color);
+	vecMake(.9,.7,.8, o->color);
 	o->radius = 100.0;
 	o->surface = SURF_NONE;
 
-  o->inside = false;
-  o->clip[o->nclips].center;
-  vecMake(00.0, 200.0,-200.0, o->clip[o->nclips].center);
-  o->clip[o->nclips].radius = 100.0;
-  ++o->nclips;
+  	o->inside = true;
+  	o->clip[o->nclips].center;
+  	vecMake(0.0, 200.0,-100.0, o->clip[o->nclips].center);
+  	o->clip[o->nclips].radius = 150.0;
+  	++o->nclips;
 
 	g.nobjects++;
 
